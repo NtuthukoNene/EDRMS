@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
@@ -11,9 +10,9 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
-    selector: 'app-login',
+    selector: 'app-register',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator, MessageModule],
+    imports: [ButtonModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator, MessageModule],
     template: `
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-screen overflow-hidden">
@@ -21,37 +20,35 @@ import { AuthService } from '../../core/services/auth.service';
                 <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
                     <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
                         <div class="text-center mb-8">
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">EDRMS</div>
-                            <span class="text-muted-color font-medium">Sign in to continue</span>
+                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Create Account</div>
+                            <span class="text-muted-color font-medium">Register to get started</span>
                         </div>
 
                         <p-message *ngIf="errorMessage" severity="error" [text]="errorMessage" styleClass="mb-4 w-full" />
 
                         <div>
+                            <label for="firstName" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">First Name</label>
+                            <input pInputText id="firstName" type="text" placeholder="First name" class="w-full md:w-120 mb-6" [(ngModel)]="firstName" />
+
+                            <label for="lastName" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Last Name</label>
+                            <input pInputText id="lastName" type="text" placeholder="Last name" class="w-full md:w-120 mb-6" [(ngModel)]="lastName" />
+
                             <label for="email" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                            <input pInputText id="email" type="email" placeholder="Email address" class="w-full md:w-120 mb-8" [(ngModel)]="email" />
+                            <input pInputText id="email" type="email" placeholder="Email address" class="w-full md:w-120 mb-6" [(ngModel)]="email" />
 
                             <label for="password" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                            <p-password id="password" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
-
-                            <div class="flex items-center justify-between mt-2 mb-8 gap-8">
-                                <div class="flex items-center">
-                                    <p-checkbox [(ngModel)]="checked" id="rememberme" binary class="mr-2"></p-checkbox>
-                                    <label for="rememberme">Remember me</label>
-                                </div>
-                                <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
-                            </div>
+                            <p-password id="password" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="mb-6" [fluid]="true"></p-password>
 
                             <p-button 
-                                label="Sign In" 
-                                styleClass="w-full" 
+                                label="Create Account" 
+                                styleClass="w-full mt-4"
                                 [loading]="loading"
-                                (onClick)="onLogin()">
+                                (onClick)="onRegister()">
                             </p-button>
 
                             <div class="text-center mt-6">
-                                <span class="text-muted-color">Don't have an account? </span>
-                                <a routerLink="/auth/register" class="text-primary font-medium cursor-pointer">Register</a>
+                                <span class="text-muted-color">Already have an account? </span>
+                                <a routerLink="/auth/login" class="text-primary font-medium cursor-pointer">Sign in</a>
                             </div>
                         </div>
                     </div>
@@ -60,27 +57,33 @@ import { AuthService } from '../../core/services/auth.service';
         </div>
     `
 })
-export class Login {
+export class Register {
+    firstName: string = '';
+    lastName: string = '';
     email: string = '';
     password: string = '';
-    checked: boolean = false;
     loading: boolean = false;
     errorMessage: string = '';
 
     constructor(private authService: AuthService, private router: Router) {}
 
-    onLogin(): void {
+    onRegister(): void {
         this.errorMessage = '';
         this.loading = true;
 
-        this.authService.login({ email: this.email, password: this.password }).subscribe({
+        this.authService.register({
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            password: this.password
+        }).subscribe({
             next: () => {
                 this.loading = false;
                 this.router.navigate(['/']);
             },
             error: (err) => {
                 this.loading = false;
-                this.errorMessage = err.error?.message || 'Login failed. Please try again.';
+                this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
             }
         });
     }
