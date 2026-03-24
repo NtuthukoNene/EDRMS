@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EDRMS.Domain\EDRMS.Domain.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Behaviours\" />
-    <Folder Include="Common\Mappings\" />
-    <Folder Include="Common\Exceptions\" />
+    <ProjectReference Include="..\EDRMS.Domain\EDRMS.Domain.csproj" />
   </ItemGroup>
 
 </Project>

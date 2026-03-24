@@ -1,6 +1,6 @@
 <Solution>
   <Project Path="EDRMS.Application/EDRMS.Application.csproj" />
-  <Project Path="EDRMS.Database/EDRMS.Database.csproj" />
+  <Project Path="EDRMS.Persistence/EDRMS.Persistence.csproj" />
   <Project Path="EDRMS.Domain/EDRMS.Domain.csproj" />
   <Project Path="EDRMS.Infrastructure/EDRMS.Infrastructure.csproj" />
   <Project Path="EDRMS/EDRMS.API.csproj" />
