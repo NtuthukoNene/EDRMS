@@ -1,0 +1,28 @@
+﻿# Dependencies — biggest offender
+node_modules
+.angular
+
+# Build output
+dist
+
+# Git
+.git
+.gitignore
+.github
+
+# Visual Studio
+.vs
+
+# Secrets
+.env
+
+# Docker files
+Dockerfile*
+docker-compose*
+
+# Logs
+*.log
+
+# Misc
+README.md
+.editorconfig

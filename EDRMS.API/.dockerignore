@@ -1,0 +1,34 @@
+# Git
+.git
+.gitignore
+
+# Visual Studio
+.vs
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output — most important, these balloon the context size
+**/bin
+**/obj
+
+# Node (in case frontend is in same repo)
+**/node_modules
+**/dist
+
+# Environment & secrets
+.env
+**/appsettings.Development.json
+
+# Docker files themselves
+**/Dockerfile*
+**/docker-compose*
+
+# Logs
+*.log
+logs/
+
+# Misc
+README.md
+.editorconfig

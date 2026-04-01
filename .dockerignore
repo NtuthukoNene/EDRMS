@@ -1,0 +1,35 @@
+﻿# Docker's own virtual disk — never include this
+DockerDesktopWSL
+
+# Frontend — has its own build stage
+EDRMS.Frontend
+
+# Build output
+**/bin
+**/obj
+
+# Git
+.git
+.gitignore
+.github
+
+# Visual Studio
+.vs
+**/*.user
+**/*.suo
+
+# Secrets
+.env
+**/appsettings.Development.json
+
+# Docker files
+**/Dockerfile*
+**/docker-compose*
+
+# Logs
+*.log
+logs/
+
+# Misc
+README.md
+.editorconfig
