@@ -1,0 +1,68 @@
+services:
+
+  # ── SQL Server ──────────────────────────────────────────────────────────────
+  edrms-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: edrms-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${DB_SA_PASSWORD}"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - edrms-db-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $$MSSQL_SA_PASSWORD -Q 'SELECT 1' -No || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - edrms-net
+
+  # ── ASP.NET Core API ────────────────────────────────────────────────────────
+  edrms-api:
+    build:
+      context: .
+      dockerfile: EDRMS.API/Dockerfile
+    container_name: edrms-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ConnectionStrings__DefaultConnection: "Server=edrms-db,1433;Database=EDRMS_Dev;User Id=sa;Password=${DB_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=True;"
+      Jwt__Key: "${JWT_SECRET}"
+      Jwt__Issuer: "edrms-api"
+      Jwt__Audience: "edrms-client"
+      Jwt__ExpiryMinutes: "60"
+    ports:
+      - "5000:8080"
+    depends_on:
+      edrms-db:
+        condition: service_healthy
+    networks:
+      - edrms-net
+    restart: on-failure
+
+  # ── Angular (Nginx) ─────────────────────────────────────────────────────────
+  edrms-frontend:
+    build:
+      context: ./EDRMS.frontend
+      dockerfile: Dockerfile
+    container_name: edrms-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - edrms-api
+    networks:
+      - edrms-net
+    restart: on-failure
+
+# ── Shared network ──────────────────────────────────────────────────────────
+networks:
+  edrms-net:
+    driver: bridge
+
+# ── Named volumes ────────────────────────────────────────────────────────────
+volumes:
+  edrms-db-data:
+    driver: local
